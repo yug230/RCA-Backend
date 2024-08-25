@@ -41,7 +41,7 @@ const Login = () => {
       };
 
       const { data } = await axios.post(
-        `https://rca-frontend-iota.vercel.app/api/user/login`,
+        `https://rca-backend-nte6.onrender.com/api/user/login`,
         { email, password },
         config
       );
