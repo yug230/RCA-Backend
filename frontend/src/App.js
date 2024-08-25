@@ -5,10 +5,12 @@ import { Routes, Route } from "react-router-dom";
 
 function App() {
   return (
-    <Routes>
-      <Route path="/" element={<Homepage />} />
-      <Route path="/chats" element={<Chatpage />} />
-    </Routes>
+    <div className="app">
+      <Routes>
+        <Route path="/" element={<Homepage />} />
+        <Route path="/chats" element={<Chatpage />} />
+      </Routes>
+    </div>
   );
 }
 

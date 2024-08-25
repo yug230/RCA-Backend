@@ -101,8 +101,8 @@ const Signup = () => {
       const data = new FormData();
       data.append("file", pics);
       data.append("upload_preset", "chat-app");
-      data.append("cloud_name", "yugproj");
-      fetch("https://api.cloudinary.com/v1_1/yugproj/image/upload", {
+      data.append("cloud_name", "yug-chatapp");
+      fetch("https://api.cloudinary.com/v1_1/yug-chatapp/image/upload", {
         method: "post",
         body: data,
       })

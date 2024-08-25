@@ -12,13 +12,13 @@ const root = createRoot(container);
 
 root.render(
   <React.StrictMode>
-    <ChakraProvider>
-      <BrowserRouter> {/* Add BrowserRouter here */}
-        <ChatProvider>
+    <BrowserRouter>
+      <ChatProvider>
+        <ChakraProvider>
           <App />
-        </ChatProvider>
-      </BrowserRouter>
-    </ChakraProvider>
+        </ChakraProvider>
+      </ChatProvider>
+    </BrowserRouter>
   </React.StrictMode>
 );
 
