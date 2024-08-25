@@ -13,8 +13,9 @@ const app = express();
 
 // Use CORS middleware
 app.use(cors({
-  origin: "https://rca-frontend-iota.vercel.app", // Adjust this if your frontend runs on a different port
-  // credentials: true, // Uncomment if you need to support cookies or authentication
+  origin: "https://rca-frontend-iota.vercel.app",
+  methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+  credentials: true, 
 }));
 
 app.use(express.json()); // to accept json data
