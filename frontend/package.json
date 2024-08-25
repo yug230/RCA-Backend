@@ -1,29 +1,26 @@
 {
-  "name": "chat-app",
+  "name": "chat-app-frontend",
   "version": "1.0.0",
-  "description": "",
-  "main": "server.js",
+  "description": "Frontend of the MERN Chat Application",
+  "main": "index.js",
   "scripts": {
-    "start": "node backend/server.js",
-    "server": "nodemon backend/server.js",
-    "build": "npm install --legacy-peer-deps --prefix frontend && npm run build --prefix frontend"
+    "start": "react-scripts start", 
+    "build": "react-scripts build", 
+    "test": "react-scripts test", 
+    "eject": "react-scripts eject" 
   },
   "keywords": [
     "mern",
-    "chat-app"
+    "chat-app",
+    "frontend"
   ],
   "author": "Yug Gupta",
   "license": "ISC",
   "dependencies": {
-    "bcryptjs": "^2.4.3",
-    "colors": "^1.4.0",
-    "cors": "^2.8.5",
-    "dotenv": "^9.0.2",
-    "express": "^4.17.1",
-    "express-async-handler": "^1.1.4",
-    "jsonwebtoken": "^8.5.1",
-    "mongoose": "^5.12.9",
-    "nodemon": "^2.0.7",
-    "socket.io": "^4.1.2"
+    "react": "^18.0.0",
+    "react-dom": "^18.0.0",
+    "react-scripts": "^5.0.0",
+    "axios": "^0.21.1",
+    "socket.io-client": "^4.1.2"
   }
 }
