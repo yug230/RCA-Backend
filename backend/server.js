@@ -20,7 +20,7 @@ app.use(cors({
 app.use(express.json()); // to accept json data
 
 app.get("/", (req, res) => {
-  res.send(`API is running on localhost... ${process.env.JWT_SECRET} `);
+  res.send(`API is running on localhost... ${PORT} `);
 });
 
 app.use("/api/user", userRoutes);
