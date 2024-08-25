@@ -13,7 +13,7 @@ const app = express();
 
 // Use CORS middleware
 app.use(cors({
-  origin: "http://localhost:3000", // Adjust this if your frontend runs on a different port
+  origin: "https://rca-frontend-iota.vercel.app", // Adjust this if your frontend runs on a different port
   // credentials: true, // Uncomment if you need to support cookies or authentication
 }));
 
@@ -57,7 +57,7 @@ const server = app.listen(
 const io = require("socket.io")(server, {
   pingTimeout: 60000,
   cors: {
-    origin: "http://localhost:3000", // Adjust this if your frontend runs on a different port
+    origin: "https://rca-frontend-iota.vercel.app", // Adjust this if your frontend runs on a different port
     // credentials: true,
   },
 });
