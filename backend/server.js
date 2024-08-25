@@ -13,7 +13,7 @@ const app = express();
 
 // Use CORS middleware
 app.use(cors({
-  origin: "https://rca-backend-nte6.onrender.com",
+  origin: "https://rca-frontend-iota.vercel.app",
   methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
   credentials: true, 
 }));
