@@ -7,16 +7,19 @@ const messageRoutes = require("./routes/messageRoutes");
 const { notFound, errorHandler } = require("./middleware/errorMiddleware");
 const cors = require("cors"); // Import cors
 
-dotenv.config({ path: '../.env' });;
+dotenv.config({ path: "../.env" });
 connectDB();
 const app = express();
 
 // Use CORS middleware
-app.use(cors({
-  origin: "https://rca-frontend-iota.vercel.app",
-  methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
-  credentials: true, 
-}));
+app.use(
+  cors({
+    origin: "https://rca-frontend-iota.vercel.app",
+    methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+    credentials: true,
+    allowedHeaders: ["Content-Type", "Authorization"],
+  })
+);
 
 app.use(express.json()); // to accept json data
 
@@ -48,7 +51,7 @@ app.use("/api/message", messageRoutes);
 app.use(notFound);
 app.use(errorHandler);
 
-const PORT = process.env.PORT ;
+const PORT = process.env.PORT;
 
 const server = app.listen(
   PORT,
@@ -58,8 +61,10 @@ const server = app.listen(
 const io = require("socket.io")(server, {
   pingTimeout: 60000,
   cors: {
-    origin: "https://rca-frontend-iota.vercel.app", // Adjust this if your frontend runs on a different port
-    // credentials: true,
+    origin: "https://rca-frontend-iota.vercel.app",
+    methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+    credentials: true,
+    allowedHeaders: ["Content-Type", "Authorization"],
   },
 });
 
