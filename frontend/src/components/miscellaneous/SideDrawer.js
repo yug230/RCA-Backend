@@ -135,7 +135,7 @@ function SideDrawer() {
         w="100%"
         p="5px 10px 5px 10px"
         borderWidth="5px"
-        style={{display: "flex", flexDirection: "row"}}
+        style={{ display: "flex", flexDirection: "row" }}
       >
         <Tooltip label="Search Users to chat" hasArrow placement="bottom-end">
           <Button variant="ghost" onClick={onOpen}>
@@ -181,6 +181,8 @@ function SideDrawer() {
                 cursor="pointer"
                 name={user.name}
                 src={user.pic}
+                bg="teal.500"
+                color="white"
               />
             </MenuButton>
             <MenuList>
@@ -199,7 +201,7 @@ function SideDrawer() {
         <DrawerContent>
           <DrawerHeader borderBottomWidth="1px">Search Users</DrawerHeader>
           <DrawerBody>
-            <Box style={{display: "flex"}} pb={2}>
+            <Box style={{ display: "flex" }} pb={2}>
               <Input
                 placeholder="Search by name or email"
                 mr={2}
@@ -219,7 +221,7 @@ function SideDrawer() {
                 />
               ))
             )}
-            {loadingChat && <Spinner ml="auto" style={{display: "flex"}} />}
+            {loadingChat && <Spinner ml="auto" style={{ display: "flex" }} />}
           </DrawerBody>
         </DrawerContent>
       </Drawer>

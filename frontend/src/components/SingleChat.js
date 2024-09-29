@@ -1,20 +1,20 @@
 import { FormControl } from "@chakra-ui/form-control";
 import { Input } from "@chakra-ui/input";
 import { Box, Text } from "@chakra-ui/layout";
-import "./styles.css";
 import { IconButton, Spinner, useToast } from "@chakra-ui/react";
-import { getSender, getSenderFull } from "../config/ChatLogics";
-import { useEffect, useState } from "react";
-import axios from "axios";
 import { ArrowBackIcon } from "@chakra-ui/icons";
-import ProfileModal from "./miscellaneous/ProfileModal";
-import ScrollableChat from "./ScrollableChat";
+import { useEffect, useState, useRef } from "react";
+import axios from "axios";
 import Lottie from "react-lottie";
 import animationData from "../animations/typing.json";
-
 import io from "socket.io-client";
+import ProfileModal from "./miscellaneous/ProfileModal";
+import { getSender, getSenderFull } from "../config/ChatLogics";
+import ScrollableChat from "./ScrollableChat";
 import UpdateGroupChatModal from "./miscellaneous/UpdateGroupChatModal";
 import { ChatState } from "../Context/ChatProvider";
+import EmojiPicker from "emoji-picker-react"; // Import the emoji picker
+
 const ENDPOINT = "http://localhost:5000"; // "https://talk-a-tive.herokuapp.com"; -> After deployment
 var socket, selectedChatCompare;
 
@@ -25,6 +25,7 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
   const [socketConnected, setSocketConnected] = useState(false);
   const [typing, setTyping] = useState(false);
   const [istyping, setIsTyping] = useState(false);
+  const [showEmojiPicker, setShowEmojiPicker] = useState(false); // State to toggle emoji picker
   const toast = useToast();
 
   const defaultOptions = {
@@ -35,6 +36,17 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
       preserveAspectRatio: "xMidYMid slice",
     },
   };
+
+  const fileInputRef = useRef(null);
+
+  const handleFileChange = (event) => {
+    const file = event.target.files[0];
+    if (file) {
+      // Handle the file (e.g., upload it, read it, etc.)
+      console.log("Selected file:", file);
+    }
+  };
+
   const { selectedChat, setSelectedChat, user, notification, setNotification } =
     ChatState();
 
@@ -71,35 +83,38 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
   };
 
   const sendMessage = async (event) => {
-    if (event.key === "Enter" && newMessage) {
-      socket.emit("stop typing", selectedChat._id);
-      try {
-        const config = {
-          headers: {
-            "Content-type": "application/json",
-            Authorization: `Bearer ${user.token}`,
-          },
-        };
-        setNewMessage("");
-        const { data } = await axios.post(
-          "/api/message",
-          {
-            content: newMessage,
-            chatId: selectedChat,
-          },
-          config
-        );
-        socket.emit("new message", data);
-        setMessages([...messages, data]);
-      } catch (error) {
-        toast({
-          title: "Error Occured!",
-          description: "Failed to send the Message",
-          status: "error",
-          duration: 5000,
-          isClosable: true,
-          position: "bottom",
-        });
+    if (event.key === "Enter" && !event.shiftKey) {
+      event.preventDefault();
+      if (newMessage.trim()) {
+        socket.emit("stop typing", selectedChat._id);
+        try {
+          const config = {
+            headers: {
+              "Content-type": "application/json",
+              Authorization: `Bearer ${user.token}`,
+            },
+          };
+          setNewMessage("");
+          const { data } = await axios.post(
+            "/api/message",
+            {
+              content: newMessage,
+              chatId: selectedChat,
+            },
+            config
+          );
+          socket.emit("new message", data);
+          setMessages([...messages, data]);
+        } catch (error) {
+          toast({
+            title: "Error Occured!",
+            description: "Failed to send the Message",
+            status: "error",
+            duration: 5000,
+            isClosable: true,
+            position: "bottom",
+          });
+        }
       }
     }
   };
@@ -156,6 +171,45 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
         setTyping(false);
       }
     }, timerLength);
+  };
+
+  const handleEmojiClick = (emoji) => {
+    setNewMessage((prevMessage) => prevMessage + emoji.emoji);
+    // setShowEmojiPicker(false); // Optionally close the picker after selecting an emoji
+  };
+
+  const handleSendClick = async () => {
+    if (newMessage.trim()) {
+      socket.emit("stop typing", selectedChat._id);
+      try {
+        const config = {
+          headers: {
+            "Content-type": "application/json",
+            Authorization: `Bearer ${user.token}`,
+          },
+        };
+        setNewMessage("");
+        const { data } = await axios.post(
+          "/api/message",
+          {
+            content: newMessage,
+            chatId: selectedChat,
+          },
+          config
+        );
+        socket.emit("new message", data);
+        setMessages([...messages, data]);
+      } catch (error) {
+        toast({
+          title: "Error Occured!",
+          description: "Failed to send the Message",
+          status: "error",
+          duration: 5000,
+          isClosable: true,
+          position: "bottom",
+        });
+      }
+    }
   };
 
   return (
@@ -227,12 +281,12 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
               id="first-name"
               isRequired
               mt={3}
+              style={{ display: "flex", flexDirection: "column" }}
             >
               {istyping ? (
                 <div>
                   <Lottie
                     options={defaultOptions}
-                    // height={50}
                     width={70}
                     style={{ marginBottom: 15, marginLeft: 0 }}
                   />
@@ -240,13 +294,87 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
               ) : (
                 <></>
               )}
-              <Input
-                variant="filled"
-                bg="#E0E0E0"
-                placeholder="Enter a message.."
-                value={newMessage}
-                onChange={typingHandler}
-              />
+              <Box style={{ position: "relative" }}>
+                <IconButton
+                  style={{ marginRight: "20px", backgroundColor: "#e8e8e8" }}
+                  icon={
+                    showEmojiPicker ? (
+                      <span role="img" aria-label="close">
+                        ❌
+                      </span>
+                    ) : (
+                      <span role="img" aria-label="emoji">
+                        😃
+                      </span>
+                    )
+                  }
+                  onClick={() => setShowEmojiPicker(!showEmojiPicker)}
+                />
+                <IconButton
+                  style={{ marginRight: "20px", backgroundColor: "#e8e8e8" }}
+                  icon={
+                    <span
+                      role="img"
+                      aria-label="add file"
+                      style={{ fontSize: "xx-large" }}
+                    >
+                      +
+                    </span>
+                  }
+                  onClick={() => fileInputRef.current.click()}
+                />
+                <input
+                  type="file"
+                  ref={fileInputRef}
+                  style={{ display: "none" }} // Hide the file input
+                  onChange={handleFileChange}
+                />
+                <textarea
+                  rows="1"
+                  variant="filled"
+                  bg="#E0E0E0"
+                  placeholder="Enter a message.."
+                  value={newMessage}
+                  onChange={typingHandler}
+                  onFocus={() => setShowEmojiPicker(false)}
+                  width={"83%"} // Adjust the width to fit the send button
+                />
+                <IconButton
+                  icon={
+                    <span data-icon="send">
+                      <svg
+                        viewBox="0 0 24 24"
+                        height="24"
+                        width="24"
+                        preserveAspectRatio="xMidYMid meet"
+                        class=""
+                        version="1.1"
+                        x="0px"
+                        y="0px"
+                        enable-background="new 0 0 24 24"
+                      >
+                        <title>send</title>
+                        <path
+                          fill="currentColor"
+                          d="M1.101,21.757L23.8,12.028L1.101,2.3l0.011,7.912l13.623,1.816L1.112,13.845 L1.101,21.757z"
+                        ></path>
+                      </svg>
+                    </span>
+                  }
+                  onClick={handleSendClick} // Call sendMessage function on click
+                  style={{ backgroundColor: "#e8e8e8", marginLeft: "10px" }}
+                />
+                {showEmojiPicker && (
+                  <EmojiPicker
+                    onEmojiClick={handleEmojiClick}
+                    style={{
+                      position: "absolute",
+                      bottom: "100%",
+                      zIndex: 1000,
+                    }}
+                  />
+                )}
+              </Box>
             </FormControl>
           </Box>
         </>
