@@ -7,20 +7,24 @@ const messageRoutes = require("./routes/messageRoutes");
 const { notFound, errorHandler } = require("./middleware/errorMiddleware");
 const cors = require("cors"); // Import cors
 
-dotenv.config({ path: '../.env' });;
+dotenv.config({ path: "../.env" });
 connectDB();
 const app = express();
 
 // Use CORS middleware
-app.use(cors({
-  origin: "http://localhost:3000", // Adjust this if your frontend runs on a different port
-  // credentials: true, // Uncomment if you need to support cookies or authentication
-}));
+app.use(
+  cors({
+    origin: "*",
+    methods: "*",
+    credentials: true,
+    allowedHeaders: ["Content-Type", "Authorization"],
+  })
+);
 
 app.use(express.json()); // to accept json data
 
 app.get("/", (req, res) => {
-  res.send(`API is running on localhost... ${process.env.JWT_SECRET} `);
+  res.send(`API is running on localhost... ${PORT} `);
 });
 
 app.use("/api/user", userRoutes);
@@ -47,7 +51,7 @@ app.use("/api/message", messageRoutes);
 app.use(notFound);
 app.use(errorHandler);
 
-const PORT = process.env.PORT ;
+const PORT = process.env.PORT;
 
 const server = app.listen(
   PORT,
@@ -57,8 +61,10 @@ const server = app.listen(
 const io = require("socket.io")(server, {
   pingTimeout: 60000,
   cors: {
-    origin: "http://localhost:3000", // Adjust this if your frontend runs on a different port
-    // credentials: true,
+    origin: "*",
+    methods: "*",
+    credentials: true,
+    allowedHeaders: ["Content-Type", "Authorization"],
   },
 });
 
