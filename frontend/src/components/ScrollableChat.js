@@ -12,6 +12,11 @@ import { ChatState } from "../Context/ChatProvider";
 const ScrollableChat = ({ messages }) => {
   const { user } = ChatState();
 
+  if (!Array.isArray(messages)) {
+    console.error("Messages should be an array. Received:", messages);
+    return null;  // Or return a loader, error message, etc.
+  }
+
   return (
     <ScrollableFeed>
       {messages &&
