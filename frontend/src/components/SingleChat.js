@@ -329,8 +329,7 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
                   style={{ display: "none" }} // Hide the file input
                   onChange={handleFileChange}
                 />
-                <textarea
-                  rows="1"
+                <Input
                   variant="filled"
                   bg="#E0E0E0"
                   placeholder="Enter a message.."
